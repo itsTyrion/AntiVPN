@@ -1,6 +1,8 @@
 package de.itsTyrion.antiVPN;
 
-import com.moandjiezana.toml.Toml;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,20 +27,21 @@ public class AntiVPN {
     @Getter
     private static AntiVPN instance;
     @Getter
-    private static Toml config;
+    private static JsonObject config;
     @Getter
     private final Logger logger;
 
     @Inject
-    public AntiVPN(ProxyServer server, Logger logger, @DataDirectory Path folder) {
+    public AntiVPN(ProxyServer server, Logger logger, @DataDirectory Path folder) throws JsonParserException {
         this.server = server;
         this.logger = logger;
         instance = this;
+
         try {
             config = loadConfig(folder); // try to load the configuration file
         } catch (IOException e) {
             e.printStackTrace();
-            config = new Toml();
+            config = new JsonObject();
         }
     }
 
@@ -53,23 +57,23 @@ public class AntiVPN {
      * @throws IOException If the file could not be read or if the default config could not be written
      */
     @SuppressWarnings("ResultOfMethodCallIgnored") // We don't need to know if a file was created
-    private Toml loadConfig(Path path) throws IOException {
+    private JsonObject loadConfig(Path path) throws IOException, JsonParserException {
         val folder = path.toFile();
-        val file = new File(folder, "config.toml");
+        val file = new File(folder, "config.json");
 
         if (!file.getParentFile().exists())
             file.getParentFile().mkdirs();
 
         if (!file.exists()) {
             try (val input = getClass().getResourceAsStream("/" + file.getName())) {
-                if (input != null) {
-                    Files.copy(input, file.toPath());
+                if (input == null) {
+                    throw new IOException("Could not read config from jar. Please re-download.");
                 } else {
-                    file.createNewFile();
+                    Files.copy(input, file.toPath());
                 }
             }
         }
 
-        return new Toml().read(file);
+        return JsonParser.object().from(new FileInputStream(file));
     }
 }
