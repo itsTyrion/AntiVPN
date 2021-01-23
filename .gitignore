@@ -1,0 +1,28 @@
+### Intellij ###
+
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/dictionaries
+.idea/statistic.xml
+.idea/discord.xml
+
+# Sensitive or high-churn files
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+
+### Gradle ###
+.gradle
+build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+### Gradle Patch ###
+**/build/

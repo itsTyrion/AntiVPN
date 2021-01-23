@@ -1,0 +1,3 @@
+kickMessage = "&cVPNs/Proxies sind nicht erlaubt" # What message will players be disconnected with?
+ipCacheDuration = 6 # How many hours should IP's be cached for?
+logFailedAttempts = true # Log "*username* tried to join using a VPN/Proxy" or not
