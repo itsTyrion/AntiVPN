@@ -2,5 +2,7 @@
   "kickMessage": "&cVPNs/Proxies are not allowed",
   "__comment": "Cache duration in hours",
   "ipCacheDuration": 6,
-  "logFailedAttempts": true
+  "logFailedAttempts": true,
+  "preLogin": true,
+  "bypassPermission": "antivpn.bypass"
 }

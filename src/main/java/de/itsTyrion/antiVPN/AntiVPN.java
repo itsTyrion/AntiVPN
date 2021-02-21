@@ -4,6 +4,7 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
@@ -47,7 +48,10 @@ public class AntiVPN {
 
     @Subscribe
     public void onInit(ProxyInitializeEvent event) {
-        server.getEventManager().register(this, PreLoginEvent.class, Check::preLogin);
+        if (config.getBoolean("preLogin", true)) {
+            server.getEventManager().register(this, PreLoginEvent.class, Check::preLogin);
+        } else
+            server.getEventManager().register(this, LoginEvent.class, Check::onLogin);
     }
 
     /**

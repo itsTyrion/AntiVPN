@@ -1,18 +1,7 @@
 ### Intellij ###
 
 # User-specific stuff
-.idea/**/workspace.xml
-.idea/**/dictionaries
-.idea/statistic.xml
-.idea/discord.xml
-
-# Sensitive or high-churn files
-.idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
-
-# Gradle
-.idea/**/gradle.xml
-.idea/**/libraries
+.idea
 
 ### Gradle ###
 .gradle
