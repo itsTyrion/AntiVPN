@@ -1,7 +1,9 @@
 ### Intellij ###
 
 # User-specific stuff
-.idea
+.idea/*
+# If this file is missing, IntelliJ ignores Git integration until explicilty requested
+!vcs.xml
 
 ### Gradle ###
 .gradle
