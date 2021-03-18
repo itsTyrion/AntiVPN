@@ -51,6 +51,8 @@ public class AntiVPN {
             server.getEventManager().register(this, PreLoginEvent.class, check::preLogin);
         } else
             server.getEventManager().register(this, LoginEvent.class, check::onLogin);
+
+        server.getEventManager().register(this, check);
     }
 
     /**

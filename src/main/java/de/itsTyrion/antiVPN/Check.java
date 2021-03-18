@@ -6,9 +6,11 @@ import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.velocitypowered.api.event.ResultedEvent;
+import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
-import lombok.AllArgsConstructor;
+import com.velocitypowered.api.event.proxy.ProxyPingEvent;
+import com.velocitypowered.api.proxy.server.ServerPing;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -24,15 +26,19 @@ import java.util.concurrent.TimeUnit;
  * @author itsTyrion
  * Created on 20.01.2021
  */
-@AllArgsConstructor
 class Check {
     private final AntiVPN antiVPN;
     private final JsonObject config;
     private final IPCache ipCache = new IPCache();
+    private final Component kickMessage;
 
-    private final Component kickMessage = LegacyComponentSerializer.legacySection().deserialize(
-            config.getString("kickMessage", "VPN's are not allowed").replaceAll("&([0-9a-flmnok])", "§$1")
-    );
+    public Check(AntiVPN antiVPN, JsonObject config) {
+        this.antiVPN = antiVPN;
+        this.config = config;
+        kickMessage = LegacyComponentSerializer.legacySection().deserialize(
+                config.getString("kickMessage", "VPN's are not allowed").replaceAll("&([0-9a-flmnok])", "§$1")
+        );
+    }
 
     void preLogin(PreLoginEvent event) {
         if (isBadIP(event.getConnection().getRemoteAddress().getAddress().getHostAddress(), event.getUsername())) {
@@ -49,6 +55,14 @@ class Check {
 
                 event.setResult(ResultedEvent.ComponentResult.denied(kickMessage));
             }
+        }
+    }
+
+    @Subscribe
+    void onPing(ProxyPingEvent event) {
+        if (isBadIP(event.getConnection().getRemoteAddress().getAddress().getHostAddress(), null)) {
+
+            event.setPing(new ServerPing(new ServerPing.Version(420, "Nope"), null, kickMessage, null));
         }
     }
 
