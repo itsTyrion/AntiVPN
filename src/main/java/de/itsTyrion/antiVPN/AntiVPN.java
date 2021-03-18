@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@Plugin(id = "antivpn", name = "AntiVPN", version = "1.1", authors = {"itsTyrion"})
+@Plugin(id = "antivpn", name = "AntiVPN", version = "@VERSION@", authors = {"itsTyrion"})
 public class AntiVPN {
     private final ProxyServer server;
 
