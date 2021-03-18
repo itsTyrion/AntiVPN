@@ -24,11 +24,9 @@ import java.nio.file.Path;
 @Plugin(id = "antivpn", name = "AntiVPN", version = "@VERSION@", authors = {"itsTyrion"})
 public class AntiVPN {
     private final ProxyServer server;
+    private final JsonObject config;
+    private final Check check;
 
-    @Getter
-    private static AntiVPN instance;
-    @Getter
-    private static JsonObject config;
     @Getter
     private final Logger logger;
 
@@ -36,22 +34,23 @@ public class AntiVPN {
     public AntiVPN(ProxyServer server, Logger logger, @DataDirectory Path folder) throws JsonParserException {
         this.server = server;
         this.logger = logger;
-        instance = this;
 
+        JsonObject json = new JsonObject();
         try {
-            config = loadConfig(folder); // try to load the configuration file
+            json = loadConfig(folder); // try to load the configuration file
         } catch (IOException e) {
             e.printStackTrace();
-            config = new JsonObject();
         }
+        config = json;
+        check = new Check(this, config);
     }
 
     @Subscribe
     public void onInit(ProxyInitializeEvent event) {
         if (config.getBoolean("preLogin", true)) {
-            server.getEventManager().register(this, PreLoginEvent.class, Check::preLogin);
+            server.getEventManager().register(this, PreLoginEvent.class, check::preLogin);
         } else
-            server.getEventManager().register(this, LoginEvent.class, Check::onLogin);
+            server.getEventManager().register(this, LoginEvent.class, check::onLogin);
     }
 
     /**

@@ -2,11 +2,13 @@ package de.itsTyrion.antiVPN;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
+import lombok.AllArgsConstructor;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -22,22 +24,27 @@ import java.util.concurrent.TimeUnit;
  * @author itsTyrion
  * Created on 20.01.2021
  */
+@AllArgsConstructor
 class Check {
-    private static final Component kickMessage = LegacyComponentSerializer.legacySection().deserialize(
-            AntiVPN.getConfig().getString("kickMessage", "VPN's are not allowed").replaceAll("&([0-9a-flmnok])", "§$1")
+    private final AntiVPN antiVPN;
+    private final JsonObject config;
+    private final IPCache ipCache = new IPCache();
+
+    private final Component kickMessage = LegacyComponentSerializer.legacySection().deserialize(
+            config.getString("kickMessage", "VPN's are not allowed").replaceAll("&([0-9a-flmnok])", "§$1")
     );
 
-    static void preLogin(PreLoginEvent event) {
+    void preLogin(PreLoginEvent event) {
         if (isBadIP(event.getConnection().getRemoteAddress().getAddress().getHostAddress(), event.getUsername())) {
 
             event.setResult(PreLoginEvent.PreLoginComponentResult.denied(kickMessage));
         }
     }
 
-    static void onLogin(LoginEvent event) {
+    void onLogin(LoginEvent event) {
         val player = event.getPlayer();
 
-        if (!player.hasPermission(AntiVPN.getConfig().getString("bypassPermission"))) {
+        if (!player.hasPermission(config.getString("bypassPermission"))) {
             if (isBadIP(player.getRemoteAddress().getAddress().getHostAddress(), player.getUsername())) {
 
                 event.setResult(ResultedEvent.ComponentResult.denied(kickMessage));
@@ -45,11 +52,11 @@ class Check {
         }
     }
 
-    static boolean isBadIP(String address, String username) {
+    boolean isBadIP(String address, String username) {
         try {
             if (queryBadIp(address)) {
-                if (AntiVPN.getConfig().getBoolean("logFailedAttempts", true)) {
-                    AntiVPN.getInstance().getLogger().info("Blocked " + username + " from joining (" + address + ")");
+                if (config.getBoolean("logFailedAttempts", true) && username != null) {
+                    antiVPN.getLogger().info("Blocked " + username + " from joining (" + address + ")");
                 }
                 return true;
             }
@@ -59,13 +66,13 @@ class Check {
         return false;
     }
 
-    private static boolean queryBadIp(String ip) throws MalformedURLException, JsonParserException {
-        Boolean bad = IPCache.isBadIP(ip);
+    private boolean queryBadIp(String ip) throws MalformedURLException, JsonParserException {
+        Boolean bad = ipCache.isBadIP(ip);
         if (bad != null)
             return bad;
 
         bad = JsonParser.object().from(new URL("https://api.iplegit.com/info?ip=" + ip)).getBoolean("bad");
-        IPCache.add(ip, bad);
+        ipCache.add(ip, bad);
 
         return bad;
     }
@@ -76,18 +83,18 @@ class Check {
      * @author itsTyrion
      * Created on 06.01.2021
      */
-    static class IPCache {
-        private static final Cache<String, Boolean> cache = CacheBuilder.newBuilder()
-                .expireAfterWrite(AntiVPN.getConfig().getLong("ipCacheDuration", 6L), TimeUnit.HOURS)
+    class IPCache {
+        private final Cache<String, Boolean> cache = CacheBuilder.newBuilder()
+                .expireAfterWrite(config.getLong("ipCacheDuration", 6L), TimeUnit.HOURS)
                 .build();
 
 
-        static void add(String ip, boolean bad) {
+        void add(String ip, boolean bad) {
             cache.put(ip, bad);
         }
 
         @Nullable
-        static Boolean isBadIP(String ip) {
+        Boolean isBadIP(String ip) {
             return cache.getIfPresent(ip);
         }
     }
