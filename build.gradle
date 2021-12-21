@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'java'
     id 'net.kyori.blossom' version '1.2.0'
@@ -37,4 +39,10 @@ jar {
 
 blossom {
     replaceToken '@VERSION@', project.version
+}
+
+processResources {
+    // always process resources. Changing the version here doesn't affect resources -> "up-to-date" -> no re-processing
+    outputs.upToDateWhen { false }
+    filter ReplaceTokens, tokens: ["VERSION": project.property('version')]
 }

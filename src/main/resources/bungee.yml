@@ -1,0 +1,5 @@
+name: 'AntiVPN'
+author: 'itsTyrion'
+description: 'Anti VPN/Proxy plug-in'
+version: '@VERSION@'
+main: 'de.itsTyrion.antiVPN.bungee.AntiVPNBungee'
