@@ -9,8 +9,7 @@ Config explanation:
 * **logFailedAttempts**: If a connection is blocked, log the Player's name + IP?
 * **preLogin**: Check the IP before the login request is completed. This is very lightweight but **DOES NOT** allow bypassing via permission.
 * **bypassPermission**: If a player has this permission, they can join using a VPN or similar. Use with care. *preLogin* has to be **false**.
-* **ipHub-Key**: The plug-in uses iphub.info, which requires an API key. Get a free plan [here](https://iphub.
-  info/apiKey/newFree) (or paid, in case you have more than 1k *unique* players per day)
+* **ipHub-Key**: The plug-in uses iphub.info, which requires an API key. Get a free plan [here](https://iphub.info/apiKey/newFree) (or paid, in case you have more than 1k *unique* players per day)
 * **allowConnectionWhenExceeded**: Once your limit has been reached, IPHub won't answer further requests for the day.
   The plug-in defaults to letting every player join, but you can change it to block (not recommended)
 
