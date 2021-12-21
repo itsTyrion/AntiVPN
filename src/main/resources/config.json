@@ -1,8 +1,12 @@
 {
+  "VERSION-DontTouch": 5,
   "kickMessage": "&cVPNs/Proxies are not allowed",
   "__comment": "Cache duration in hours",
   "ipCacheDuration": 6,
   "logFailedAttempts": true,
   "preLogin": true,
-  "bypassPermission": "antivpn.bypass"
+  "bypassPermission": "antivpn.bypass",
+  "ipHub-Key": "key from https://iphub.info",
+  "_comment_": "Once the API limit has been reached, should players be allowed to connect?",
+  "allowConnectionWhenExceeded": true
 }
