@@ -23,7 +23,7 @@ public class AntiVPNBungee extends Plugin {
     @Override
     public void onEnable() {
         try {
-            config = new ConfigBungee(new File(getDataFolder(), "config.json")).load();
+            config = new ConfigBungee(new File(getDataFolder(), "config.json")).init();
         } catch (IOException e) {
             e.printStackTrace();
             getLogger().severe("Couldn't load/init config. Shutting down");

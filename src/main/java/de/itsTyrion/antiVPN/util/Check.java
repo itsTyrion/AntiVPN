@@ -4,7 +4,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import lombok.AllArgsConstructor;
 import lombok.val;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -19,11 +18,16 @@ import java.util.concurrent.TimeUnit;
  * @author itsTyrion
  * Created on 20.01.2021
  */
-@AllArgsConstructor
 public class Check {
     private final LoggerWrapper loggerWrapper;
     private final Config config;
-    private final IPCache ipCache = new IPCache();
+    private final IPCache ipCache;
+
+    public Check(LoggerWrapper loggerWrapper, Config config) {
+        this.loggerWrapper = loggerWrapper;
+        this.config = config;
+        ipCache = new IPCache();
+    }
 
     public boolean isBadIP(String address, String username) {
         try {

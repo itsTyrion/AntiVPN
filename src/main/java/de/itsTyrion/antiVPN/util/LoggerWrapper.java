@@ -5,16 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 
-import java.util.logging.Logger;
-
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LoggerWrapper {
-    private Logger bungeeLogger;
-
+    private java.util.logging.Logger bungeeLogger;
     private org.slf4j.Logger velocityLogger;
+
     @Contract("_ -> new")
-    public static LoggerWrapper bungee(Logger logger) {
+    public static LoggerWrapper bungee(java.util.logging.Logger logger) {
         return new LoggerWrapper(logger, null);
     }
 

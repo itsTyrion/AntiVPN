@@ -23,16 +23,27 @@ public class ConfigVelocity extends Config {
     }
 
     @Override
-    protected ConfigVelocity load() throws IOException {
-        val wrongVersion = config.getInt("VERSION-DontTouch") < 5;
-        createConfigFile(wrongVersion);
+    protected ConfigVelocity init() throws IOException {
+        if (configFile.getParentFile().mkdirs() || !configFile.exists()) {
+            createConfigFile(false);
+        } else {
+            load();
+            if (config.getInt("VERSION-DontTouch") < CONFIG_VERSION)
+                createConfigFile(true);
+        }
+        load();
+        return this;
+    }
 
+    @Override
+    protected void load() throws IOException {
         try {
-            config = JsonParser.object().from(new FileInputStream(configFile));
+            val fileStream = new FileInputStream(configFile);
+            config = JsonParser.object().from(fileStream);
+            fileStream.close();
         } catch (JsonParserException ex) {
             System.err.println("Couldn't parse config (" + ex.getMessage() + ')');
         }
-        return this;
     }
 
     private final Pattern pattern = Pattern.compile("&([0-9a-flmnokr])"); // Pattern to translate & color codes to §

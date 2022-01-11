@@ -12,23 +12,32 @@ import java.nio.file.Files;
 public abstract class Config {
 
     protected final File configFile;
+    protected static final int CONFIG_VERSION = 5;
 
 
     /**
-     * Tries to read the plugin's configuration file and parse it.
-     * In case it doesn't exist, the default configuration
-     * from the.jar will be written.
+     * Checks whether the config file is present and in the current version on-disk.
+     * If not, it's copied from the .jar file. If there was an outdated config, it's backed up
      *
      * @throws IOException If the file could not be read or written
      * @return this instance
      */
-    protected abstract Config load() throws IOException;
+    protected abstract Config init() throws IOException;
 
-    protected final void createConfigFile(boolean overwrite) throws IOException {
-        if (!configFile.getParentFile().exists())
-            configFile.getParentFile().mkdirs();
+    /**
+     * Tries to read the plugin's configuration file and parse it.
+     *
+     * @throws IOException If the file could not be read or written
+     */
+    protected abstract void load() throws IOException;
 
-        if (!configFile.exists() || overwrite) {
+    protected final void createConfigFile(boolean oldVersionPresent) throws IOException {
+        if (oldVersionPresent) {
+            Files.move(configFile.toPath(), configFile.toPath().getParent().resolve("config_old.json"));
+            System.err.println("New config version! Your old config has been renamed to config_old");
+        } else
+            System.err.println("No config file found! Please set up.");
+        if (!configFile.exists()) {
             try (val input = getClass().getResourceAsStream("/" + configFile.getName())) {
                 if (input == null) {
                     throw new IOException("Could not read config from jar. Please re-download.");

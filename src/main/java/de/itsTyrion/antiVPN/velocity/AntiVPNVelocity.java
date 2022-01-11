@@ -31,7 +31,7 @@ public class AntiVPNVelocity {
         this.server = server;
         ConfigVelocity cfg = null;
         try {
-            cfg = new ConfigVelocity(new File(folder.toFile(), "config.json")).load();
+            cfg = new ConfigVelocity(new File(folder.toFile(), "config.json")).init();
         } catch (IOException e) {
             e.printStackTrace();
         }
