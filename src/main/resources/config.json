@@ -1,6 +1,6 @@
 {
-  "VERSION-DontTouch": 5,
-  "kickMessage": "&cVPNs/Proxies are not allowed",
+  "VERSION-DontTouch": 6,
+  "disconnectMessage": "&cVPNs/Proxies are not allowed",
   "__comment": "Cache duration in hours",
   "ipCacheDuration": 6,
   "logFailedAttempts": true,

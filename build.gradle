@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'de.itsTyrion'
-version '1.6.1'
+version '1.6.2'
 
 repositories {
     mavenCentral()
@@ -19,7 +19,7 @@ repositories {
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = sourceCompatibility
-
+compileJava.options.encoding = "UTF-8"
 
 dependencies {
     implementation 'com.grack:nanojson:1.7'

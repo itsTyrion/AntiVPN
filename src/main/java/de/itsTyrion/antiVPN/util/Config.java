@@ -12,7 +12,7 @@ import java.nio.file.Files;
 public abstract class Config {
 
     protected final File configFile;
-    protected static final int CONFIG_VERSION = 5;
+    protected static final int CONFIG_VERSION = 6;
 
 
     /**
